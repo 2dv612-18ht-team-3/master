@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <NavBar/>
+    <InfoMessage/>
     <router-view/>
   </div>
 </template>
@@ -13,7 +14,8 @@ import InfoMessage from '@/components/InfoMessage.vue'
 export default {
   name: 'app',
   components: {
-    NavBar
+    NavBar,
+    InfoMessage
   }
 }
 </script>
