@@ -8,33 +8,40 @@ export default new Vuex.Store({
     navbarLinks: [
       {
         id: 0,
-        text: "Home",
-        page: "/"
+        text: 'Home',
+        page: '/'
       },
       {
         id: 1,
-        text: "About",
-        page: "/about"
+        text: 'About',
+        page: '/about'
       },
       {
         id: 2,
-        text: "Register",
-        page: "/register"
+        text: 'Register',
+        page: '/register'
       },
       {
         id: 3,
-        text: "Settings",
-        page: "/usersettings"
+        text: 'Settings',
+        page: '/usersettings'
       },
       {
         id: 4,
-        text: "Login",
-        page: "/login"
+        text: 'Login',
+        page: '/login'
       },
       {
         id: 5,
-        text: "Log out",
-        page: "/logout"
+        text: 'Log out',
+        page: '/logout'
+      }
+    ],
+    adminMessages: [
+      {
+        id: 0,
+        message: 'This is an important message from the administrator.',
+        viewed: ['some.user@email.com', 'other.user@email.com']
       }
     ]
   },

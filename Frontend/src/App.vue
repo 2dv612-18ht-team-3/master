@@ -8,6 +8,8 @@
 <script>
 /* eslint-disable */
 import NavBar from '@/components/NavBar.vue'
+import InfoMessage from '@/components/InfoMessage.vue'
+
 export default {
   name: 'app',
   components: {
