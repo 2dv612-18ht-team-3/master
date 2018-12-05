@@ -37,13 +37,10 @@ export default new Vuex.Store({
         page: '/logout'
       }
     ],
-    adminMessages: [
-      {
-        id: 0,
+    adminMessage: {
         message: 'This is an important message from the administrator.',
         viewed: ['some.user@email.com', 'other.user@email.com']
       }
-    ]
   },
   mutations: {
 

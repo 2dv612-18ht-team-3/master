@@ -6,6 +6,7 @@ const loginRoutes = require('./api/routes/login')
 const adminRoutes = require('./api/routes/admin')
 const userRoutes = require('./api/routes/user')
 const vehicleRoutes = require('./api/routes/vehicle')
+const messageRoutes = require('./api/routes/message')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -34,6 +35,7 @@ app.use('/login', loginRoutes)
 app.use('/admin', adminRoutes)
 app.use('/user', userRoutes)
 app.use('/vehicle', vehicleRoutes)
+app.use('/message', messageRoutes)
 
 // Error handling needs to be after all routes
 app.use((req, res, next) => {

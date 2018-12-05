@@ -8,12 +8,17 @@
     <div class="infomessage-card hidden" id="infoCard">
       <div class="card blue">
         <div class="card-content white-text">
-          <span class="card-title">Card Title</span>
-          <p>I am a very simple card. I am good at containing small bits of information.
-          I am convenient because I require little markup to use effectively.</p>
+          <span class="card-title">Important message!</span>
+          <p id="messagePara">{{ message }}</p>
         </div>
         <div class="card-action">
-          <a href="#">This is a link</a>
+          <button
+            class="btn"
+            type="submit"
+            name="action"
+            v-on:click="dismissMessage">
+            Dismiss
+          </button>
         </div>
       </div>
     </div>
@@ -26,26 +31,94 @@
 
 export default {
   name: 'InfoMessage',
+  data() {
+    return {
+      message: ''
+    }
+  },
   methods: {
     toggleCard: function() {
       document.getElementById('infoCard').classList.toggle('hidden')
     },
 
+    toggleCardContainer: function() {
+      document.getElementById('infoMessageContainer').classList.toggle('hidden')
+    },
+
     checkLogin: function() {
       const user = JSON.parse(localStorage.getItem('user'))
-      console.log(user)
-      return user === null
+      return user !== null
+    },
+
+    dismissMessage: function(event) {
+      event.preventDefault()
+      const request=require('request')
+      let backendUrl = "127.0.0.1:3000";
+      if (process.env.VUE_APP_ENVIRONMENT === "production") {
+        backendUrl = "194.47.206.226:3000";
+      }
+
+      const user = JSON.parse(localStorage.getItem('user'))
+
+      request.post({ url: 'http://'+backendUrl+'/message/viewed', 
+        form:{ email: user.email }}, function(err, response, body) {
+        let data = JSON.parse(body)
+          if (err||response.statusCode!==200){
+            window.M.toast({
+            html: 'data.message',
+            classes: 'deep-orange accent-4 black-text',
+            displayLength: 6000
+            })
+          }
+      })
+
+      console.log('Dismissing message...')
+      this.toggleCard()
+      this.toggleCardContainer()
+    },
+
+    getMessage: function() {
+      const request=require('request')
+      let backendUrl = "127.0.0.1:3000";
+      if (process.env.VUE_APP_ENVIRONMENT === "production") {
+        backendUrl = "194.47.206.226:3000";
+      }
+      
+      const user = JSON.parse(localStorage.getItem('user'))
+      let message
+      request.get({ uri: 'http://'+backendUrl+'/message'}, function(err, res, body) {
+        message = JSON.parse(body)
+        
+        if (user !== null) {
+          if (message.viewed_by.includes(user.email) === false) {
+            const adminMessage = message.message
+            
+            const loggedIn = user !== null
+            const toggle = document.getElementById('infoMessageContainer').classList.contains('hidden')
+            if (loggedIn && adminMessage !== '' && toggle) {
+              console.log(adminMessage)
+              document.getElementById('infoMessageContainer').classList.toggle('hidden')
+              document.getElementById('messagePara').textContent = adminMessage
+            }
+          } 
+        } else {
+          if (document.getElementById('infoMessageContainer').classList.contains('hidden') === false) {
+            document.getElementById('infoMessageContainer').classList.add('hidden')
+          }
+
+          if (document.getElementById('infoCard').classList.contains('hidden') === false) {
+            document.getElementById('infoCard').classList.add('hidden')
+          }
+        }
+        
+      })
+      
     }
   },
   mounted() {
-    setInterval(() => {
-      const loggedIn = this.checkLogin()
-      if (!loggedIn) {
-        const el = document.getElementById('infoMessageContainer').classList.remove('hidden')
-      } else {
-        const el = document.getElementById('infoMessageContainer').classList.add('hidden')
-      }
-    }, 1000)
+    this.getMessage()
+
+    setInterval(this.getMessage, 1000)
   }
 }
 </script>
@@ -59,7 +132,8 @@ export default {
 }
 
 .infomessage-card {
-  width: 500px;
+  width: 80%;
+  max-width: 500px;
   position: absolute;
   right: 60px;
   top: 50px;
