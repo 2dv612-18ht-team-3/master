@@ -118,7 +118,7 @@ export default {
   mounted() {
     this.getMessage()
 
-    setInterval(this.getMessage, 1000)
+    setInterval(this.getMessage, 2000)
   }
 }
 </script>
