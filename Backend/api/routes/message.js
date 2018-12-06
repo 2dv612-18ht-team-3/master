@@ -10,10 +10,11 @@ router.get('/', (req, res, next) => {
         message: 'Unable to establish database connection'
       })
     } else {
-      Messagemodel.findOne({ stringId: 'admin_message' }, function (err, result) {
+      Messagemodel.find({ stringId: 'admin_message' }, function (err, result) {
         if (err) {
           console.log(err)
         } else {
+          
           res.status(200).send(result)
         }
 
@@ -33,11 +34,11 @@ router.post('/', (req, res, next) => {
       })
     }
     // Updates the message in database, creates if not exists
-    let query = {}
-    let update = { message: req.body.message, viewed_by: [], stringId: 'admin_message' }
+    let query = {stringId: "admin_message"}
+    let update = { messages: { message: req.body.message, viewed_by: [], stringId: 'admin_message' } }
     let options = { upsert: true, new: true, setDefaultsOnInsert: true }
 
-    Messagemodel.findOneAndUpdate(query, update, options, function (err, res) {
+    Messagemodel.update(query, {$push: update}, options, function (err, res) {
       if (err) {
         console.log(err)
       } else {
@@ -57,22 +58,28 @@ router.post('/viewed', (req, res, next) => {
       })
     }
 
-    console.log(req.body)
+//    console.log(req.body)
 
-    Messagemodel.findOne({ stringId: 'admin_message' }, function (err, result) {
+    Messagemodel.find({ stringId: 'admin_message' }, function (err, result) {
       if (err) {
         console.log(err)
       }
       // res.status(200).send(result)
-      const emailArray = result.viewed_by
-      emailArray.push(req.body.email)
-      console.log(emailArray)
+let emailArray
+ result[0].messages.forEach(function(item){
 
-      let query = {}
-      let update = { message: result.message, viewed_by: emailArray, stringId: 'admin_message' }
+if(item.message===req.body.message){
+emailArray =item.viewed_by
+emailArray.push(req.body.email)
+}
+})
+
+//will overwrite entire message set in current implementation, need to fix database model
+      let query = { stringId: 'admin_message'}
+      let update = {messages:{ message: req.body.message, viewed_by: emailArray, stringId: 'admin_message' }}
       let options = { upsert: true, new: true, setDefaultsOnInsert: true }
 
-      Messagemodel.findOneAndUpdate(query, update, options, function (err, res) {
+      Messagemodel.update(query, {$set: update}, options, function (err, res) {
         if (err) {
           console.log(err)
         } else {
