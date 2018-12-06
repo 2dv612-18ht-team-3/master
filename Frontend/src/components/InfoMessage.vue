@@ -84,7 +84,7 @@ export default {
         backendUrl = "194.47.206.226:3000";
       }
       
-      const user = JSON.parse(localStorage.getItem('user'))
+      let user = JSON.parse(localStorage.getItem('user'))
       let message
       request.get({ uri: 'http://'+backendUrl+'/message'}, function(err, res, body) {
         message = JSON.parse(body)
