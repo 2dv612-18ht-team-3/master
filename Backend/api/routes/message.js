@@ -20,9 +20,7 @@ router.get('/', (req, res, next) => {
       // console.log(result)
       })
     }
-    
   })
-  mongoose.connection.close()
 })
 
 router.post('/', (req, res, next) => {
@@ -47,7 +45,6 @@ router.post('/', (req, res, next) => {
       }
     })
   })
-  mongoose.connection.close()
 })
 
 router.post('/viewed', (req, res, next) => {
@@ -84,7 +81,6 @@ router.post('/viewed', (req, res, next) => {
       })
     })
   })
-  mongoose.connection.close()
 })
 
 module.exports = router
