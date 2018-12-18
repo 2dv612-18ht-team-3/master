@@ -22,8 +22,23 @@
       type="submit"
       name="action"
       v-on:click="changePassword"
+    >Save password</button>
+
+    <h5>Change email</h5>
+    <div class="input-field col s6">
+      <input id="email" type="text" class="validate">
+      <label for="email">New email</label>
+    </div>
+
+    <button
+      class="btn waves-effect waves-light"
+      type="submit"
+      name="action"
+      v-on:click="changeEmail"
     >Save changes</button>
 
+    <br>
+    <br>
     <div class="row">
       <div class="col s12">
         <h5>Remove account</h5>
@@ -129,6 +144,54 @@ export default {
               displayLength: 6000
             });
           }
+        });
+      }
+    },
+    changeEmail: function(event) {
+      event.preventDefault();
+      let backendUrl = "127.0.0.1:3000";
+      if (process.env.VUE_APP_ENVIRONMENT === "production") {
+        backendUrl = "194.47.206.226:3000";
+      }
+      const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      let newEmail = document.getElementById("email").value;
+
+      if (regEx.test(newEmail)) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const data = {
+          _id: user._id,
+          email: newEmail
+        };
+        fetch("http://" + backendUrl + "/user/changepw", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        }).then(response => {
+          if (response.status === 200) {
+            // Display success message
+            window.M.toast({
+              html: "Email has changed",
+              classes: "green darken-1",
+              displayLength: 6000
+            });
+          } else {
+            // Display error message
+            window.M.toast({
+              html: "Email change failed",
+              classes: "deep-orange accent-4 black-text",
+              displayLength: 6000
+            });
+          }
+        });
+      } else {
+        // Display error message
+        window.M.toast({
+          html: newEmail + " is not valid!",
+          classes: "deep-orange accent-4 black-text",
+          displayLength: 6000
         });
       }
     }
